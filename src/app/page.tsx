@@ -124,25 +124,30 @@ const stories = [
 export default function HomePage() {
   return (
     <>
-      <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-b from-navy to-navy-light overflow-hidden">
-        <div className="absolute inset-0 opacity-20 pointer-events-none">
-          <div className="absolute top-10 left-10 w-72 h-72 bg-gold/30 rounded-full blur-3xl" />
-          <div className="absolute bottom-10 right-10 w-96 h-96 bg-crimson/20 rounded-full blur-3xl" />
-        </div>
+      <section className="relative min-h-screen flex items-center justify-start bg-gray-100 overflow-hidden">
+        {/* Placeholder for the bridge background image */}
+        <div 
+          className="absolute inset-0 z-0 bg-cover bg-center"
+          style={{ backgroundImage: 'url("/images/maluku-placeholder.jpg")' }}
+        ></div>
+        
+        {/* White gradient mask */}
+        <div className="absolute inset-0 z-0 bg-gradient-to-r from-white via-white/80 to-transparent w-full md:w-3/4 lg:w-2/3"></div>
 
-        <div className="container relative z-10 text-center px-4">
+        <div className="container relative z-10 px-4 pt-20 text-left">
           <motion.h1
-            className="text-5xl md:text-6xl lg:text-7xl font-heading font-bold text-white leading-tight mb-6"
+            className="text-5xl md:text-6xl lg:text-7xl font-heading font-bold leading-tight mb-6"
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            Discover the Hope, Energy{" "}
-            <span className="text-gold">& Future of Maluku</span>
+            <div className="text-gray-900">Discover the HOPE,</div>
+            <div className="text-gray-900">Energy &</div>
+            <div className="text-blue-700">Future of Maluku</div>
           </motion.h1>
 
           <motion.p
-            className="max-w-2xl mx-auto text-lg md:text-xl text-white/80 mb-10"
+            className="max-w-2xl text-lg md:text-xl text-gray-700 mb-10 leading-relaxed font-medium"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
@@ -152,33 +157,31 @@ export default function HomePage() {
           </motion.p>
 
           <motion.div
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+            className="flex flex-col sm:flex-row items-center justify-start gap-4"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
           >
             <Link
               href="/nature"
-              className="bg-gold text-navy font-semibold px-8 py-3.5 rounded-xl hover:bg-gold-light transition-colors text-lg"
+              className="bg-blue-700 text-white font-semibold px-8 py-3.5 rounded-full hover:bg-blue-800 transition-colors text-base md:text-lg text-center"
             >
               Explore Maluku
             </Link>
             <Link
               href="/economy"
-              className="bg-crimson text-white font-semibold px-8 py-3.5 rounded-xl hover:opacity-90 transition-opacity text-lg"
+              className="bg-transparent border border-gray-400 text-gray-800 font-semibold px-8 py-3.5 rounded-full hover:bg-gray-100 transition-colors text-base md:text-lg text-center"
             >
               Invest & Collaborate
             </Link>
             <Link
               href="/media"
-              className="border-2 border-white text-white font-semibold px-8 py-3.5 rounded-xl hover:bg-white/10 transition-colors text-lg"
+              className="bg-transparent border border-gray-400 text-gray-800 font-semibold px-8 py-3.5 rounded-full hover:bg-gray-100 transition-colors text-base md:text-lg text-center"
             >
-              Watch The Story
+              Watch the Story
             </Link>
           </motion.div>
         </div>
-
-        <ScrollIndicator />
       </section>
 
       <SectionWrapper className="py-20">

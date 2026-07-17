@@ -8,7 +8,8 @@
   --color-crimson: #B22222;
   --color-gold: #C9A84C;
   --color-gold-light: #D4B96A;
-  --font-heading: "Playfair Display", serif;
+  --color-blue: #0066b2;
+  --font-heading: var(--font-poppins);
   --font-body: "Inter", sans-serif;
 }
 
