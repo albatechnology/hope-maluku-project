@@ -302,7 +302,7 @@ export default function HomePage() {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
-              href="/events"
+              href="/events/1/register"
               className="bg-gold text-navy font-semibold px-8 py-3.5 rounded-xl hover:bg-gold-light transition-colors text-lg"
             >
               Register Now

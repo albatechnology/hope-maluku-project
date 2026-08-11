@@ -123,6 +123,10 @@ export default function Navbar() {
             INDONESIA
             <ChevronDown className="w-4 h-4" />
           </div>
+          
+          <Link href="/events/1/register" className="bg-blue-600 text-white px-5 py-2.5 text-sm font-bold rounded-full hover:bg-blue-700 transition-colors ml-4 shadow-sm">
+            REGISTER
+          </Link>
         </div>
 
         <button
@@ -161,6 +165,11 @@ export default function Navbar() {
               <Link href="/events" className="px-4 py-2 text-sm font-semibold text-navy">EVENTS</Link>
               <Link href="/media" className="px-4 py-2 text-sm font-semibold text-navy">MEDIA & STORIES</Link>
               <Link href="/collaboration" className="px-4 py-2 text-sm font-semibold text-navy">COLLABORATION</Link>
+              <div className="px-4 py-3 mt-2 border-t border-gray-100 flex flex-col gap-3">
+                <Link href="/events/1/register" className="bg-blue-600 text-white px-4 py-3 text-center text-sm font-bold rounded-xl hover:bg-blue-700 transition-colors shadow-sm">
+                  REGISTER NOW
+                </Link>
+              </div>
             </div>
           </motion.div>
         )}

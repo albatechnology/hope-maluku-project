@@ -71,9 +71,46 @@ const guests = [
   { name: "Raja Maluku", title: "Majelis Adat Maluku" },
 ]
 
+interface Event {
+  id: number
+  slug: string
+  name: string
+  deck: string
+  start_date: string
+  end_date: string
+  venue_address: string
+  image?: {
+    original_url: string
+  } | null
+}
+
 export default function EventsPage() {
   const { days, hours, minutes, seconds } = useCountdown()
   const [form, setForm] = useState({ nama: "", email: "", telepon: "", instansi: "", jumlah: "1" })
+  const [events, setEvents] = useState<Event[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchEvents() {
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+        const response = await fetch(`${apiUrl}/api/events`)
+        const json = await response.json()
+        
+        if (json && json.data) {
+          // Filter id !== 1 sesuai permintaan
+          const filteredEvents = json.data.filter((e: Event) => e.id !== 1)
+          setEvents(filteredEvents)
+        }
+      } catch (error) {
+        console.error("Gagal mengambil data event:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchEvents()
+  }, [])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -110,36 +147,82 @@ export default function EventsPage() {
         </div>
       </section>
 
-      {/* COUNTDOWN */}
-      <section className="py-16 bg-white">
-        <div className="container text-center">
-          <div className="inline-flex items-center gap-2 bg-gold/10 text-gold px-4 py-1.5 rounded-full text-sm font-semibold mb-6">
-            <Calendar className="w-4 h-4" />
-            25 Juli 2026 — Taman Budaya Ambon
+      {/* UPCOMING EVENTS (DYNAMIC FROM API) */}
+      <section className="py-16 bg-gray-50">
+        <div className="container">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-navy mb-4">
+              Upcoming Events
+            </h2>
+            <div className="w-20 h-1 bg-gold mx-auto" />
           </div>
-          <h2 className="text-3xl md:text-4xl font-heading font-bold text-navy mb-10">
-            Countdown Menuju Event
-          </h2>
-          <div className="grid grid-cols-4 gap-4 max-w-lg mx-auto">
-            {[
-              { label: "Days", value: days },
-              { label: "Hours", value: hours },
-              { label: "Minutes", value: minutes },
-              { label: "Seconds", value: seconds },
-            ].map((item) => (
-              <div
-                key={item.label}
-                className="bg-navy border border-gold/30 rounded-xl p-4 text-center"
-              >
-                <div className="text-gold text-3xl font-bold">
-                  {String(item.value).padStart(2, "0")}
+
+          {loading ? (
+            <div className="flex justify-center items-center py-10">
+              <div className="w-10 h-10 border-4 border-gold/30 border-t-gold rounded-full animate-spin"></div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {events.map((event) => (
+                <div key={event.id} className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col group transition-transform hover:-translate-y-2 duration-300">
+                  {/* Image Container */}
+                  <div className="relative h-56 bg-gray-200 overflow-hidden">
+                    {event.image?.original_url ? (
+                      <img 
+                        src={event.image.original_url} 
+                        alt={event.name} 
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        onError={(e) => {
+                           (e.target as HTMLImageElement).src = 'https://placehold.co/600x400/1C2B4F/FFFFFF?text=Maluku+Event'
+                        }}
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-navy/10 flex items-center justify-center">
+                        <Camera className="w-12 h-12 text-navy/30" />
+                      </div>
+                    )}
+                    <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-navy text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
+                      {new Date(event.start_date).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
+                    </div>
+                  </div>
+                  
+                  {/* Content */}
+                  <div className="p-6 flex flex-col flex-grow">
+                    <h3 className="text-xl font-heading font-bold text-navy mb-2 line-clamp-2">
+                      {event.name}
+                    </h3>
+                    <p className="text-navy/60 text-sm mb-4 line-clamp-2">
+                      {event.deck || "Ikuti event eksklusif kami dan perluas wawasan Anda di Energizing Maluku."}
+                    </p>
+                    
+                    <div className="mt-auto space-y-2 mb-6">
+                      <div className="flex items-start gap-2 text-sm text-navy/70">
+                        <MapPin className="w-4 h-4 text-gold shrink-0 mt-0.5" />
+                        <span className="line-clamp-2">{event.venue_address || "TBA"}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-navy/70">
+                        <Clock className="w-4 h-4 text-gold shrink-0" />
+                        <span>{new Date(event.start_date).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIT</span>
+                      </div>
+                    </div>
+
+                    <Link
+                      href={`/events/${event.slug}/register`}
+                      className="w-full flex items-center justify-center gap-2 bg-crimson text-white font-semibold py-3 rounded-xl hover:bg-crimson/90 transition-colors"
+                    >
+                      Register Now
+                      <ArrowRight className="w-4 h-4" />
+                    </Link>
+                  </div>
                 </div>
-                <div className="text-white/60 text-xs uppercase tracking-wider mt-1">
-                  {item.label}
+              ))}
+              {events.length === 0 && !loading && (
+                <div className="col-span-full text-center py-10 text-navy/50">
+                  Belum ada event terbaru saat ini.
                 </div>
-              </div>
-            ))}
-          </div>
+              )}
+            </div>
+          )}
         </div>
       </section>
 
@@ -242,7 +325,7 @@ export default function EventsPage() {
 
               <div className="flex flex-wrap gap-4">
                 <Link
-                  href="#register"
+                  href="/events/1/register"
                   className="bg-crimson text-white font-semibold px-8 py-3 rounded-xl hover:opacity-90 transition-opacity"
                 >
                   Register Now
@@ -413,82 +496,7 @@ export default function EventsPage() {
         </div>
       </SectionWrapper>
 
-      {/* REGISTRATION FORM */}
-      <SectionWrapper className="py-20" id="register">
-        <div className="container max-w-xl">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-navy mb-4">
-              Daftar Sekarang
-            </h2>
-            <p className="text-navy/60">
-              Isi form di bawah untuk mendaftar sebagai peserta Energizing Maluku 2026.
-            </p>
-          </div>
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label className="block text-sm font-medium text-navy mb-1.5">Nama</label>
-              <input
-                type="text"
-                required
-                value={form.nama}
-                onChange={(e) => setForm({ ...form, nama: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition text-navy"
-                placeholder="Masukkan nama lengkap"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-navy mb-1.5">Email</label>
-              <input
-                type="email"
-                required
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition text-navy"
-                placeholder="contoh@email.com"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-navy mb-1.5">No. Telepon</label>
-              <input
-                type="tel"
-                required
-                value={form.telepon}
-                onChange={(e) => setForm({ ...form, telepon: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition text-navy"
-                placeholder="08xxxxxxxxxx"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-navy mb-1.5">Instansi</label>
-              <input
-                type="text"
-                required
-                value={form.instansi}
-                onChange={(e) => setForm({ ...form, instansi: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition text-navy"
-                placeholder="Nama instansi/perusahaan"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-navy mb-1.5">Jumlah Peserta</label>
-              <input
-                type="number"
-                required
-                min={1}
-                value={form.jumlah}
-                onChange={(e) => setForm({ ...form, jumlah: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition text-navy"
-              />
-            </div>
-            <button
-              type="submit"
-              className="w-full bg-crimson text-white font-semibold py-3.5 rounded-xl hover:opacity-90 transition-opacity"
-            >
-              Daftar
-            </button>
-          </form>
-        </div>
-      </SectionWrapper>
+
     </>
   )
 }
