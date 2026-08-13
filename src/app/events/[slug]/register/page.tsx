@@ -290,6 +290,8 @@ export default function RegisterEventPage() {
                       className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition text-navy bg-white"
                     >
                       <option value="" disabled>Pilih Kategori</option>
+                      <option value="Pencari Kerja">Dosen</option>
+                      <option value="Pencari Kerja">Masyarakat Umum</option>
                       <option value="Pencari Kerja">Pencari Kerja</option>
                       <option value="Mahasiswa/Fresh Graduate">Mahasiswa/Fresh Graduate</option>
                       <option value="Calon Founder Startup">Calon Founder Startup</option>

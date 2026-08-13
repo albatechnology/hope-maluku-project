@@ -12,14 +12,76 @@ export default function AdminScannerPage() {
     message: string
   }>({ status: null, message: "" })
   const [lastScanned, setLastScanned] = useState<string>("")
+  const [manualQrCode, setManualQrCode] = useState("")
   const [isProcessing, setIsProcessing] = useState(false)
 
   const scannerRef = useRef<Html5Qrcode | null>(null)
 
+  const checkInTicket = async (qrCode: string) => {
+    setIsProcessing(true)
+    setLastScanned(qrCode)
+
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const response = await fetch(`${apiUrl}/api/tickets/check-in`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({ qr_code: qrCode, event_id: eventId }),
+      })
+
+      const data = await response.json()
+      const ticketInfo = data.ticket_info
+
+      if (response.ok) {
+        playBeep("success")
+        let message = data.message || "Berhasil Check-in!"
+        if (ticketInfo?.attendee_name) {
+          message += ` — ${ticketInfo.attendee_name}`
+          if (ticketInfo.event_name) {
+            message += ` (${ticketInfo.event_name})`
+          }
+        }
+        setScanResult({ status: "success", message })
+        setManualQrCode("")
+      } else if (response.status === 400) {
+        playBeep("error")
+        let message = data.message || "Tiket sudah digunakan sebelumnya."
+        if (ticketInfo?.attendee_name) {
+          message += ` — ${ticketInfo.attendee_name}`
+        }
+        setScanResult({ status: "warning", message })
+      } else {
+        playBeep("error")
+        setScanResult({
+          status: "error",
+          message: data.message || "Tiket tidak valid atau tidak ditemukan.",
+        })
+      }
+    } catch {
+      playBeep("error")
+      setScanResult({
+        status: "error",
+        message: "Gagal terhubung ke server.",
+      })
+    } finally {
+      setIsProcessing(false)
+      // Reset last scanned after 3 seconds so the same QR can be scanned again later
+      setTimeout(() => {
+        setLastScanned("")
+      }, 3000)
+    }
+  }
+
   // Play beep sound using Web Audio API
   const playBeep = (type: "success" | "error") => {
     try {
-      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)()
+      const AudioContextCtor =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
+      const audioCtx = new AudioContextCtor()
       const oscillator = audioCtx.createOscillator()
       const gainNode = audioCtx.createGain()
 
@@ -54,54 +116,22 @@ export default function AdminScannerPage() {
       return
     }
 
-    setIsProcessing(true)
-    setLastScanned(decodedText)
+    await checkInTicket(decodedText)
+  }
 
-    try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-      const response = await fetch(`${apiUrl}/api/events/${eventId}/check-in`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify({ qr_code: decodedText }),
-      })
-
-      const data = await response.json()
-
-      if (response.ok) {
-        playBeep("success")
-        setScanResult({
-          status: "success",
-          message: data.message || "Berhasil Check-in!",
-        })
-      } else if (response.status === 400) {
-        playBeep("error")
-        setScanResult({
-          status: "warning",
-          message: data.message || "Tiket sudah digunakan sebelumnya.",
-        })
-      } else {
-        playBeep("error")
-        setScanResult({
-          status: "error",
-          message: data.message || "Tiket tidak valid atau tidak ditemukan.",
-        })
-      }
-    } catch (error) {
-      playBeep("error")
-      setScanResult({
-        status: "error",
-        message: "Gagal terhubung ke server.",
-      })
-    } finally {
-      setIsProcessing(false)
-      // Reset last scanned after 3 seconds so the same QR can be theoretically scanned again if needed later
-      setTimeout(() => {
-        setLastScanned("")
-      }, 3000)
+  const handleManualCheckIn = () => {
+    if (!eventId) {
+      alert("Masukkan Event ID terlebih dahulu")
+      return
     }
+
+    if (!manualQrCode.trim()) {
+      alert("Masukkan QR Code terlebih dahulu")
+      return
+    }
+
+    setScanResult({ status: null, message: "" })
+    checkInTicket(manualQrCode.trim())
   }
 
   const startScanner = async () => {
@@ -125,7 +155,7 @@ export default function AdminScannerPage() {
           qrbox: { width: 250, height: 250 },
         },
         handleScanSuccess,
-        (errorMessage) => {
+        () => {
           // Ignore general scan errors (like no QR code in frame)
         }
       )
@@ -180,8 +210,37 @@ export default function AdminScannerPage() {
             />
           </div>
 
+          <div className="p-6 border-b border-gray-100">
+            <label className="block text-sm font-medium text-navy mb-1.5">QR Code Manual</label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={manualQrCode}
+                onChange={(e) => setManualQrCode(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleManualCheckIn()
+                  }
+                }}
+                disabled={isScanning || isProcessing}
+                className="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition text-navy disabled:bg-gray-100"
+                placeholder="Tempel / ketik QR Code tiket"
+              />
+              <button
+                onClick={handleManualCheckIn}
+                disabled={isScanning || isProcessing}
+                className="bg-gold text-navy px-5 py-3 rounded-xl font-semibold hover:bg-gold/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+              >
+                Check-in
+              </button>
+            </div>
+            <p className="mt-1.5 text-xs text-navy/50">
+              Gunakan jika QR Code tidak dapat dipindai oleh kamera.
+            </p>
+          </div>
+
           <div className="flex-1 flex flex-col items-center justify-center p-6 bg-black/5 relative">
-            {!isScanning ? (
+            {!isScanning && (
               <div className="text-center">
                 <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
                   <Camera className="w-8 h-8" />
@@ -194,16 +253,21 @@ export default function AdminScannerPage() {
                   Mulai Scan
                 </button>
               </div>
-            ) : (
-              <div className="w-full h-full flex flex-col">
-                <div id="reader" className="w-full overflow-hidden rounded-xl bg-black" style={{ minHeight: "300px" }}></div>
-                <button
-                  onClick={stopScanner}
-                  className="mt-6 bg-red-500 text-white px-8 py-3 rounded-xl font-semibold hover:bg-red-600 transition-colors shadow-lg mx-auto"
-                >
-                  Hentikan Scan
-                </button>
-              </div>
+            )}
+
+            <div
+              id="reader"
+              className="w-full overflow-hidden rounded-xl bg-black"
+              style={{ minHeight: "300px", display: isScanning ? "block" : "none" }}
+            ></div>
+
+            {isScanning && (
+              <button
+                onClick={stopScanner}
+                className="mt-6 bg-red-500 text-white px-8 py-3 rounded-xl font-semibold hover:bg-red-600 transition-colors shadow-lg mx-auto"
+              >
+                Hentikan Scan
+              </button>
             )}
 
             {isProcessing && (
