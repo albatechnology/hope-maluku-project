@@ -18,6 +18,8 @@ import {
   ChevronRight,
   ArrowRight,
   X,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react"
 import SectionWrapper from "@/components/SectionWrapper"
 import { cn } from "@/lib/utils"
@@ -48,18 +50,90 @@ function useCountdown() {
   return timeLeft
 }
 
-const schedule = [
-  { time: "07:00 - 08:00", activity: "Registrasi & Morning Coffee", location: "Lobby Taman Budaya" },
-  { time: "08:00 - 08:30", activity: "Pembukaan & Tarian Tradisional", location: "Panggung Utama" },
-  { time: "08:30 - 09:15", activity: "Sambutan Gubernur Maluku", location: "Panggung Utama" },
-  { time: "09:15 - 10:15", activity: "Keynote: Investasi Masa Depan Maluku", location: "Hall A" },
-  { time: "10:15 - 10:30", activity: "Coffee Break", location: "Area Pameran" },
-  { time: "10:30 - 12:00", activity: "Panel Diskusi: Ekonomi Kreatif & Anak Muda", location: "Hall A" },
-  { time: "12:00 - 13:00", activity: "Ishoma & Networking Lunch", location: "Ruang Makan" },
-  { time: "13:00 - 14:30", activity: "Workshop: UMKM Naik Kelas", location: "Hall B" },
-  { time: "14:30 - 15:30", activity: "Pitching Session: Startup Maluku", location: "Hall A" },
-  { time: "15:30 - 17:00", activity: "Pameran Produk & Kultur Maluku", location: "Area Pameran" },
-  { time: "17:00 - 17:30", activity: "Penutupan & Foto Bersama", location: "Panggung Utama" },
+const timelineData = [
+  {
+    title: "1. MEDIA BRIEF",
+    date: "2 September 2026",
+    location: "JAKARTA & AMBON",
+    description: "Media Nasional & Lokal",
+    color: "bg-[#0070C0]",
+    icon: Camera,
+    rundown: [
+      { time: "13.30-14.00", activity: "Media Arrival" },
+      { time: "14.00-14.20", activity: "Registration & Networking" },
+      { time: "14.20-14.25", activity: "Opening" },
+      { time: "14.25-14.35", activity: "Welcome & Introduction" },
+      { time: "14.35-14.50", activity: "CEO Danantara" },
+      { time: "14.50-15.00", activity: "Gubernur Maluku" },
+      { time: "15.05-15.30", activity: "Exclusive Talkshow" },
+      { time: "15.30-16.00", activity: "Media Q&A" },
+      { time: "16.00-16.10", activity: "Closing" },
+    ]
+  },
+  {
+    title: "2. GOVERNOR'S BREAKFAST",
+    date: "10 September 2026",
+    location: "AMBON",
+    description: "Networking + Stakeholder Engagement",
+    color: "bg-[#00B0F0]",
+    icon: Coffee,
+    rundown: [
+      { time: "07.30-08.00", activity: "Registrasi & Welcome Coffee" },
+      { time: "08.00-08.15", activity: "Welcome & Opening (MC mention sponsor)" },
+      { time: "08.15-08.30", activity: "Sambutan Gubernur Maluku" },
+      { time: "08.30-08.45", activity: "Energizing Maluku: Vision & Program" },
+      { time: "08.45-09.00", activity: "Sponsor's Message (Sponsor Tunggal)" },
+      { time: "09.00-09.30", activity: "Breakfast & Networking" },
+      { time: "09.30-10.00", activity: "Stakeholder Dialogue (Goverment + Business + Education + Community)" },
+      { time: "10.00-10.15", activity: "Closing & Group Photo" },
+    ]
+  },
+  {
+    title: "3. MAIN EVENT",
+    date: "12 September 2026",
+    location: "Gedung Gubernur Maluku",
+    description: "",
+    color: "bg-[#0096B4]",
+    icon: Building,
+    rundown: [
+      { time: "08.00-08.30", activity: "Registrasi & Networking" },
+      { time: "08.30-08.40", activity: "Opening (MC menyebut sponsor)" },
+      { time: "08.40-08.50", activity: "Opening Video" },
+      { time: "08.50-09.10", activity: "Sambutan Ketua Panitia" },
+      { time: "09.10-09.30", activity: "Sambutan Gubernur Maluku" },
+      { time: "09.30-09.45", activity: "Sponsor Message / Keynote (Sponsor Tunggal)" },
+      { time: "09.45-10.15", activity: "Keynote: Maluku & Talenta Masa Depan" },
+      { time: "10.15-10.30", activity: "Coffee Break" },
+      { time: "10.30-12.15", activity: "Talkshow: Maluku, Generasi Muda dan Kepemimpinan" },
+      { time: "12.15-12.30", activity: "Commitment / Declaration Energizing Maluku" },
+      { time: "12.30-12.45", activity: "Closing (Sponsor Recognition)" },
+      { time: "13.30-16.30", activity: "Kelas Tematik Character Building: Waktunya Maluku, Ini Waktumu" },
+    ]
+  },
+  {
+    title: "4. KELAS TEMATIK (4 Minggu)",
+    date: "12 Sep – 10 Okt 2026",
+    location: "Universitas Pattimura, Ambon",
+    description: "",
+    color: "bg-[#ED7D31]",
+    icon: BookOpen,
+    rundown: [
+      { time: "08.30-09.00", activity: "Registrasi / Transition" },
+      { time: "09.00-10.30", activity: "Lesson 1" },
+      { time: "10.30-12.00", activity: "Lesson 2" },
+    ]
+  },
+  {
+    title: "5. CLOSING CEREMONY",
+    date: "17 Oktober 2026",
+    location: "Gedung Gubernur Maluku",
+    description: "",
+    color: "bg-[#00B050]",
+    icon: Users,
+    rundown: [
+      { time: "08.00-12.00", activity: "Graduation, Showcase, Future Collaboration session" },
+    ]
+  }
 ]
 
 const guests = [
@@ -89,6 +163,7 @@ export default function EventsPage() {
   const [form, setForm] = useState({ nama: "", email: "", telepon: "", instansi: "", jumlah: "1" })
   const [events, setEvents] = useState<Event[]>([])
   const [loading, setLoading] = useState(true)
+  const [expandedTimeline, setExpandedTimeline] = useState<number | null>(null)
 
   useEffect(() => {
     async function fetchEvents() {
@@ -231,202 +306,111 @@ export default function EventsPage() {
         <div className="container">
           <div className="text-center mb-14">
             <h2 className="text-3xl md:text-4xl font-heading font-bold text-navy mb-4">
-              Timeline Acara
+              Timeline & Kegiatan Acara
             </h2>
             <div className="w-20 h-1 bg-gold mx-auto" />
           </div>
 
-          {/* PHASE 1 */}
-          <motion.div
-            className="mb-16"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-full bg-gold flex items-center justify-center">
-                <span className="text-navy font-bold text-sm">1</span>
-              </div>
-              <h3 className="text-2xl font-heading font-bold text-navy">Pre-Event</h3>
-              <span className="text-gold text-sm font-semibold">Juni 2026</span>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="border-l-4 border-gold bg-white rounded-xl shadow-md p-6">
-                <div className="w-10 h-10 rounded-full bg-navy flex items-center justify-center mb-3">
-                  <Camera className="w-5 h-5 text-gold" />
-                </div>
-                <h4 className="text-lg font-heading font-semibold text-navy mb-1">Media Brief — Jakarta</h4>
-                <p className="text-xs text-gold font-semibold uppercase tracking-wider mb-2">Juni 2026</p>
-                <p className="text-navy/70 text-sm leading-relaxed">
-                  Konferensi pers dan pengenalan Energizing Maluku kepada media nasional di Jakarta.
-                  Menghadirkan narasumber dari pemerintah, swasta, dan komunitas kreatif Maluku.
-                </p>
-              </div>
-              <div className="border-l-4 border-gold bg-white rounded-xl shadow-md p-6">
-                <div className="w-10 h-10 rounded-full bg-navy flex items-center justify-center mb-3">
-                  <Coffee className="w-5 h-5 text-gold" />
-                </div>
-                <h4 className="text-lg font-heading font-semibold text-navy mb-1">Governor's Breakfast — Ambon</h4>
-                <p className="text-xs text-gold font-semibold uppercase tracking-wider mb-2">Juni 2026</p>
-                <p className="text-navy/70 text-sm leading-relaxed">
-                  Breakfast meeting bersama Gubernur Maluku dan para pemangku kepentingan untuk
-                  membahas kolaborasi strategis dalam pengembangan potensi daerah.
-                </p>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* PHASE 2 */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-full bg-crimson flex items-center justify-center">
-                <span className="text-white font-bold text-sm">2</span>
-              </div>
-              <h3 className="text-2xl font-heading font-bold text-navy">Main Event</h3>
-              <span className="text-gold text-sm font-semibold">25 Juli 2026</span>
-            </div>
-
-            <div className="bg-gold/5 border border-gold/30 rounded-2xl p-8">
-              <div className="flex items-center gap-2 text-xs text-gold font-semibold uppercase tracking-wider mb-2">
-                <MapPin className="w-4 h-4" />
-                Taman Budaya Ambon
-              </div>
-              <h4 className="text-2xl md:text-3xl font-heading font-bold text-navy mb-2">
-                Taman Budaya Ambon
-              </h4>
-              <p className="text-lg text-navy/80 font-semibold mb-6">
-                1000 Anak Muda & Pelaku Usaha
-              </p>
-
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
-                {[
-                  { icon: UserCheck, label: "Gubernur & Walikota" },
-                  { icon: Building, label: "Danantara" },
-                  { icon: Briefcase, label: "KADIN & IWAPI" },
-                  { icon: Crown, label: "Para Raja Maluku" },
-                  { icon: Handshake, label: "Mitra Kegiatan" },
-                ].map((item) => (
-                  <div
-                    key={item.label}
-                    className="bg-white rounded-xl p-4 text-center shadow-sm"
-                  >
-                    <item.icon className="w-6 h-6 text-gold mx-auto mb-2" />
-                    <span className="text-xs text-navy/70 font-medium">{item.label}</span>
+          <div className="max-w-6xl mx-auto space-y-12 md:space-y-24 relative before:absolute before:inset-0 before:ml-8 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-1 before:bg-gradient-to-b before:from-gold before:via-gold/30 before:to-transparent">
+            {timelineData.map((item, index) => {
+              const isEven = index % 2 === 0;
+              return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className={cn(
+                  "relative flex items-center justify-between md:justify-normal group",
+                  isEven ? "md:flex-row-reverse" : "md:flex-row"
+                )}
+              >
+                {/* Center Node on Desktop, Left Node on Mobile */}
+                <div className="absolute left-8 md:left-1/2 -translate-x-1/2 flex items-center justify-center w-12 h-12 md:w-16 md:h-16 rounded-full border-4 border-white bg-white shadow-xl z-10 transition-transform duration-500 group-hover:scale-110">
+                  <div className={cn("w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center", item.color)}>
+                     <item.icon className="w-4 h-4 md:w-5 md:h-5 text-white" />
                   </div>
-                ))}
-              </div>
-
-              <div className="flex flex-wrap gap-4">
-                <Link
-                  href="/events/1/register"
-                  className="bg-crimson text-white font-semibold px-8 py-3 rounded-xl hover:opacity-90 transition-opacity"
-                >
-                  Register Now
-                </Link>
-                <Link
-                  href="#schedule"
-                  className="border-2 border-navy text-navy font-semibold px-8 py-3 rounded-xl hover:bg-navy hover:text-white transition-colors"
-                >
-                  Learn More
-                </Link>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* PHASE 3 */}
-          <motion.div
-            className="mt-16"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-full bg-navy flex items-center justify-center">
-                <span className="text-gold font-bold text-sm">3</span>
-              </div>
-              <h3 className="text-2xl font-heading font-bold text-navy">Post-Event</h3>
-              <span className="text-gold text-sm font-semibold">4 Minggu Pasca Event</span>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="border-l-4 border-gold bg-white rounded-xl shadow-md p-6">
-                <div className="w-10 h-10 rounded-full bg-navy flex items-center justify-center mb-3">
-                  <BookOpen className="w-5 h-5 text-gold" />
                 </div>
-                <h4 className="text-lg font-heading font-semibold text-navy mb-1">10 Kelas Intensif</h4>
-                <p className="text-navy/70 text-sm leading-relaxed">
-                  Pelatihan intensif untuk 500 peserta mencakup kewirausahaan, pengembangan
-                  bisnis digital, dan produk kreatif. Setiap kelas difasilitasi oleh mentor
-                  profesional dari berbagai sektor industri.
-                </p>
-              </div>
-              <div className="border-l-4 border-gold bg-white rounded-xl shadow-md p-6">
-                <div className="w-10 h-10 rounded-full bg-navy flex items-center justify-center mb-3">
-                  <Users className="w-5 h-5 text-gold" />
-                </div>
-                <h4 className="text-lg font-heading font-semibold text-navy mb-1">Mentorship & Networking</h4>
-                <p className="text-navy/70 text-sm leading-relaxed">
-                  Program pendampingan dan jaringan bisnis yang menghubungkan peserta dengan
-                  investor, mentor, dan mitra strategis untuk pengembangan usaha berkelanjutan.
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </SectionWrapper>
 
-      {/* EVENT DETAIL SCHEDULE */}
-      <SectionWrapper className="py-20">
-        <div className="container" id="schedule">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-navy mb-4">
-              Jadwal Acara
-            </h2>
-            <div className="w-20 h-1 bg-gold mx-auto" />
-          </div>
-          <div className="overflow-x-auto rounded-xl border border-gray-200">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-navy text-white">
-                  <th className="text-left px-5 py-3.5 font-heading font-semibold">Time</th>
-                  <th className="text-left px-5 py-3.5 font-heading font-semibold">Activity</th>
-                  <th className="text-left px-5 py-3.5 font-heading font-semibold">Location</th>
-                </tr>
-              </thead>
-              <tbody>
-                {schedule.map((item, i) => (
-                  <tr
-                    key={i}
-                    className={cn(
-                      "border-t border-gray-100",
-                      i % 2 === 0 && "bg-gray-50"
-                    )}
-                  >
-                    <td className="px-5 py-3.5 text-navy font-medium whitespace-nowrap">
-                      <span className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-gold" />
-                        {item.time}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3.5 text-navy/80">{item.activity}</td>
-                    <td className="px-5 py-3.5 text-navy/60">
-                      <span className="flex items-center gap-1">
-                        <MapPin className="w-3.5 h-3.5 text-crimson" />
-                        {item.location}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                {/* Content Card container - positioned to left or right */}
+                <div className={cn(
+                  "w-full ml-16 md:ml-0 md:w-[calc(50%-3rem)] flex flex-col",
+                  isEven ? "md:items-start" : "md:items-end"
+                )}>
+                   {/* Card */}
+                   <div className={cn(
+                     "w-full bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:-translate-y-1"
+                   )}>
+                      
+                      {/* Event Header */}
+                      <div className={cn("p-6 md:p-8 border-t-4", item.color.replace('bg-', 'border-'))}>
+                         <h3 className={cn("text-2xl font-heading font-bold text-navy mb-4", !isEven && "md:text-right")}>{item.title}</h3>
+                         
+                         <div className={cn("flex flex-col gap-3 text-sm text-navy/70 font-medium", !isEven && "md:items-end")}>
+                            <span className={cn("flex items-center gap-3", !isEven && "md:flex-row-reverse")}>
+                              <div className="w-8 h-8 rounded-full bg-gold/10 flex items-center justify-center shrink-0">
+                                <Calendar className="w-4 h-4 text-gold" />
+                              </div>
+                              {item.date}
+                            </span>
+                            <span className={cn("flex items-center gap-3", !isEven && "md:flex-row-reverse")}>
+                              <div className="w-8 h-8 rounded-full bg-crimson/10 flex items-center justify-center shrink-0">
+                                <MapPin className="w-4 h-4 text-crimson" />
+                              </div>
+                              {item.location}
+                            </span>
+                            {item.description && (
+                              <span className={cn("flex items-center gap-3", !isEven && "md:flex-row-reverse")}>
+                                <div className="w-8 h-8 rounded-full bg-navy/5 flex items-center justify-center shrink-0">
+                                  <span className="w-2 h-2 rounded-full bg-navy/30" />
+                                </div>
+                                {item.description}
+                              </span>
+                            )}
+                         </div>
+                      </div>
+
+                      {/* Rundown */}
+                      <div className="p-6 md:p-8 bg-gray-50/50 border-t border-gray-100">
+                         <h4 className={cn("font-heading font-semibold text-navy mb-6 flex items-center gap-2 text-lg", !isEven && "md:justify-end md:flex-row-reverse")}>
+                           <Clock className="w-5 h-5 text-gold" />
+                           Rundown Acara
+                         </h4>
+                         
+                         <div className={cn(
+                           "space-y-5 relative before:absolute before:inset-0 before:h-full before:w-px before:bg-gradient-to-b before:from-gray-200 before:via-gray-300 before:to-transparent",
+                           "before:ml-2.5 before:-translate-x-px md:before:translate-x-0",
+                           isEven ? "md:before:ml-2.5" : "md:before:ml-auto md:before:mr-2.5"
+                         )}>
+                            {item.rundown.map((rd, i) => (
+                              <div key={i} className={cn(
+                                "relative flex flex-col group/rd",
+                                "pl-8",
+                                isEven ? "md:pl-8" : "md:pl-0 md:pr-8 md:text-right"
+                              )}>
+                                 {/* Dot */}
+                                 <div className={cn(
+                                   "absolute top-1.5 w-5 h-5 bg-white border-2 border-gray-300 rounded-full z-10 transition-colors group-hover/rd:border-gold group-hover/rd:bg-gold/10",
+                                   "left-0 md:-translate-x-px",
+                                   isEven ? "md:left-0" : "md:left-auto md:right-0 md:translate-x-px"
+                                 )} />
+                                 
+                                 <span className="text-gold font-bold text-sm font-heading tracking-wide mb-1">
+                                   {rd.time}
+                                 </span>
+                                 <span className="text-navy/80 text-sm font-medium leading-relaxed">
+                                   {rd.activity}
+                                 </span>
+                              </div>
+                            ))}
+                         </div>
+                      </div>
+                   </div>
+                </div>
+              </motion.div>
+              );
+            })}
           </div>
         </div>
       </SectionWrapper>

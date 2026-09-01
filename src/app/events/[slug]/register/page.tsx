@@ -42,6 +42,8 @@ export default function RegisterEventPage() {
     source_info: "",
     institution_name: "",
     attendance_type: "offline",
+    negeri_adat: "",
+    session_choice: "",
   })
 
   const [eventDetail, setEventDetail] = useState<any>(null)
@@ -196,6 +198,18 @@ export default function RegisterEventPage() {
                   />
                 </div>
 
+                <div>
+                  <label className="block text-sm font-medium text-navy mb-1.5">Negeri Adat *</label>
+                  <input
+                    type="text"
+                    required
+                    value={form.negeri_adat}
+                    onChange={(e) => setForm({ ...form, negeri_adat: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition text-navy"
+                    placeholder="Nama Negeri Adat"
+                  />
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-navy mb-1.5">Jenis Kelamin *</label>
@@ -335,10 +349,9 @@ export default function RegisterEventPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-navy mb-1.5">Link CV (Google Drive / Portfolio) *</label>
+                  <label className="block text-sm font-medium text-navy mb-1.5">Link CV (Google Drive / Portfolio) (Opsional)</label>
                   <input
                     type="url"
-                    required
                     value={form.cv_link}
                     onChange={(e) => setForm({ ...form, cv_link: e.target.value })}
                     className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition text-navy"
@@ -396,6 +409,52 @@ export default function RegisterEventPage() {
                     )}
                   </div>
                 </div>
+
+                {form.attendance_type === "offline" && (
+                  <div>
+                    <label className="block text-sm font-medium text-navy mb-1.5">Pilihan Sesi *</label>
+                    <div className="flex gap-6 mt-2 mb-4">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="session_choice"
+                          value="session_1"
+                          required={form.attendance_type === "offline"}
+                          checked={form.session_choice === "session_1"}
+                          onChange={(e) => setForm({ ...form, session_choice: e.target.value })}
+                          className="w-4 h-4 text-gold border-gray-300 focus:ring-gold"
+                        />
+                        <span className="text-sm text-navy">Sesi 1</span>
+                      </label>
+                      
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="session_choice"
+                          value="session_2"
+                          required={form.attendance_type === "offline"}
+                          checked={form.session_choice === "session_2"}
+                          onChange={(e) => setForm({ ...form, session_choice: e.target.value })}
+                          className="w-4 h-4 text-gold border-gray-300 focus:ring-gold"
+                        />
+                        <span className="text-sm text-navy">Sesi 2</span>
+                      </label>
+
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="session_choice"
+                          value="full_session"
+                          required={form.attendance_type === "offline"}
+                          checked={form.session_choice === "full_session"}
+                          onChange={(e) => setForm({ ...form, session_choice: e.target.value })}
+                          className="w-4 h-4 text-gold border-gray-300 focus:ring-gold"
+                        />
+                        <span className="text-sm text-navy">Full Session (Keduanya)</span>
+                      </label>
+                    </div>
+                  </div>
+                )}
 
                 <div>
                   <label className="block text-sm font-medium text-navy mb-1.5">Darimana Anda mengetahui event ini? *</label>
