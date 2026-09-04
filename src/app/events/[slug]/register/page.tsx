@@ -106,6 +106,9 @@ export default function RegisterEventPage() {
       if (!payload.cv_link) {
         delete (payload as any).cv_link
       }
+      if (payload.attendance_type === "online" || !payload.session_choice) {
+        delete (payload as any).session_choice
+      }
 
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
       const response = await fetch(`${apiUrl}/api/events/${eventId}/register`, {
