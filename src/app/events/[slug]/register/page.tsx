@@ -27,6 +27,17 @@ export default function RegisterEventPage() {
   const slug = params.slug as string
   const eventId = slug // using slug as eventId for now
 
+  const [eventDetail, setEventDetail] = useState<any>(null)
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const isSessionEvent =
+    slug === "energizing-maluku" ||
+    slug === "maluku-energizing-event" ||
+    eventDetail?.slug === "energizing-maluku" ||
+    eventDetail?.slug === "maluku-energizing-event"
+
   const [form, setForm] = useState({
     full_name: "",
     gender: "",
@@ -45,11 +56,6 @@ export default function RegisterEventPage() {
     negeri_adat: "",
     session_choice: "",
   })
-
-  const [eventDetail, setEventDetail] = useState<any>(null)
-  const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
-  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     async function fetchEventDetail() {
@@ -106,7 +112,7 @@ export default function RegisterEventPage() {
       if (!payload.cv_link) {
         delete (payload as any).cv_link
       }
-      if (payload.attendance_type === "online" || !payload.session_choice) {
+      if (!isSessionEvent || payload.attendance_type === "online" || !payload.session_choice) {
         delete (payload as any).session_choice
       }
 
@@ -307,8 +313,8 @@ export default function RegisterEventPage() {
                       className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition text-navy bg-white"
                     >
                       <option value="" disabled>Pilih Kategori</option>
-                      <option value="Pencari Kerja">Dosen</option>
-                      <option value="Pencari Kerja">Masyarakat Umum</option>
+                      <option value="Dosen">Dosen</option>
+                      <option value="Masyarakat Umum">Masyarakat Umum</option>
                       <option value="Pencari Kerja">Pencari Kerja</option>
                       <option value="Mahasiswa/Fresh Graduate">Mahasiswa/Fresh Graduate</option>
                       <option value="Calon Founder Startup">Calon Founder Startup</option>
@@ -413,7 +419,7 @@ export default function RegisterEventPage() {
                   </div>
                 </div>
 
-                {form.attendance_type === "offline" && (
+                {isSessionEvent && form.attendance_type === "offline" && (
                   <div>
                     <label className="block text-sm font-medium text-navy mb-1.5">Pilihan Sesi *</label>
                     <div className="flex gap-6 mt-2 mb-4">
@@ -422,7 +428,7 @@ export default function RegisterEventPage() {
                           type="radio"
                           name="session_choice"
                           value="session_1"
-                          required={form.attendance_type === "offline"}
+                          required={isSessionEvent && form.attendance_type === "offline"}
                           checked={form.session_choice === "session_1"}
                           onChange={(e) => setForm({ ...form, session_choice: e.target.value })}
                           className="w-4 h-4 text-gold border-gray-300 focus:ring-gold"
@@ -435,7 +441,7 @@ export default function RegisterEventPage() {
                           type="radio"
                           name="session_choice"
                           value="session_2"
-                          required={form.attendance_type === "offline"}
+                          required={isSessionEvent && form.attendance_type === "offline"}
                           checked={form.session_choice === "session_2"}
                           onChange={(e) => setForm({ ...form, session_choice: e.target.value })}
                           className="w-4 h-4 text-gold border-gray-300 focus:ring-gold"
@@ -448,7 +454,7 @@ export default function RegisterEventPage() {
                           type="radio"
                           name="session_choice"
                           value="full_session"
-                          required={form.attendance_type === "offline"}
+                          required={isSessionEvent && form.attendance_type === "offline"}
                           checked={form.session_choice === "full_session"}
                           onChange={(e) => setForm({ ...form, session_choice: e.target.value })}
                           className="w-4 h-4 text-gold border-gray-300 focus:ring-gold"
