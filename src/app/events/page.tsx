@@ -22,7 +22,7 @@ import {
   ChevronUp,
 } from "lucide-react"
 import SectionWrapper from "@/components/SectionWrapper"
-import { cn } from "@/lib/utils"
+import { cn, isEventPassed } from "@/lib/utils"
 import { showToast } from "@/components/FormToast"
 import Link from "next/link"
 
@@ -238,59 +238,84 @@ export default function EventsPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {events.map((event) => (
-                <div key={event.id} className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col group transition-transform hover:-translate-y-2 duration-300">
-                  {/* Image Container */}
-                  <div className="relative h-56 bg-gray-200 overflow-hidden">
-                    {event.image?.original_url ? (
-                      <img 
-                        src={event.image.original_url} 
-                        alt={event.name} 
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        onError={(e) => {
-                           (e.target as HTMLImageElement).src = 'https://placehold.co/600x400/1C2B4F/FFFFFF?text=Maluku+Event'
-                        }}
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-navy/10 flex items-center justify-center">
-                        <Camera className="w-12 h-12 text-navy/30" />
-                      </div>
-                    )}
-                    <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-navy text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
-                      {new Date(event.start_date).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
-                    </div>
-                  </div>
-                  
-                  {/* Content */}
-                  <div className="p-6 flex flex-col flex-grow">
-                    <h3 className="text-xl font-heading font-bold text-navy mb-2 line-clamp-2">
-                      {event.name}
-                    </h3>
-                    <p className="text-navy/60 text-sm mb-4 line-clamp-2">
-                      {event.deck || "Ikuti event eksklusif kami dan perluas wawasan Anda di Energizing Maluku."}
-                    </p>
-                    
-                    <div className="mt-auto space-y-2 mb-6">
-                      <div className="flex items-start gap-2 text-sm text-navy/70">
-                        <MapPin className="w-4 h-4 text-gold shrink-0 mt-0.5" />
-                        <span className="line-clamp-2">{event.venue_address || "TBA"}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm text-navy/70">
-                        <Clock className="w-4 h-4 text-gold shrink-0" />
-                        <span>{new Date(event.start_date).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIT</span>
-                      </div>
-                    </div>
+              {events.map((event) => {
+                const isPassed = isEventPassed(event)
 
-                    <Link
-                      href={`/events/${event.slug}/register`}
-                      className="w-full flex items-center justify-center gap-2 bg-crimson text-white font-semibold py-3 rounded-xl hover:bg-crimson/90 transition-colors"
-                    >
-                      Register Now
-                      <ArrowRight className="w-4 h-4" />
-                    </Link>
+                return (
+                  <div
+                    key={event.id}
+                    className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col group transition-transform hover:-translate-y-2 duration-300"
+                  >
+                    {/* Image Container */}
+                    <div className="relative h-56 bg-gray-200 overflow-hidden">
+                      {event.image?.original_url ? (
+                        <img 
+                          src={event.image.original_url} 
+                          alt={event.name} 
+                          className={cn(
+                            "w-full h-full object-cover transition-transform duration-500",
+                            isPassed ? "grayscale contrast-75" : "group-hover:scale-105"
+                          )}
+                          onError={(e) => {
+                             (e.target as HTMLImageElement).src = 'https://placehold.co/600x400/1C2B4F/FFFFFF?text=Maluku+Event'
+                          }}
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-navy/10 flex items-center justify-center">
+                          <Camera className="w-12 h-12 text-navy/30" />
+                        </div>
+                      )}
+                      {isPassed && (
+                        <div className="absolute top-4 left-4 bg-gray-900/80 backdrop-blur-sm text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
+                          Event Selesai
+                        </div>
+                      )}
+                      <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-navy text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
+                        {new Date(event.start_date).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
+                      </div>
+                    </div>
+                    
+                    {/* Content */}
+                    <div className="p-6 flex flex-col flex-grow">
+                      <h3 className="text-xl font-heading font-bold text-navy mb-2 line-clamp-2">
+                        {event.name}
+                      </h3>
+                      <p className="text-navy/60 text-sm mb-4 line-clamp-2">
+                        {event.deck || "Ikuti event eksklusif kami dan perluas wawasan Anda di Energizing Maluku."}
+                      </p>
+                      
+                      <div className="mt-auto space-y-2 mb-6">
+                        <div className="flex items-start gap-2 text-sm text-navy/70">
+                          <MapPin className="w-4 h-4 text-gold shrink-0 mt-0.5" />
+                          <span className="line-clamp-2">{event.venue_address || "TBA"}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm text-navy/70">
+                          <Clock className="w-4 h-4 text-gold shrink-0" />
+                          <span>{new Date(event.start_date).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIT</span>
+                        </div>
+                      </div>
+
+                      {isPassed ? (
+                        <button
+                          disabled
+                          className="w-full flex items-center justify-center gap-2 bg-gray-200 text-gray-400 font-semibold py-3 rounded-xl cursor-not-allowed select-none"
+                        >
+                          Pendaftaran Ditutup
+                        </button>
+                      ) : (
+                        <Link
+                          href={`/events/${event.slug}/register`}
+                          className="w-full flex items-center justify-center gap-2 bg-crimson text-white font-semibold py-3 rounded-xl hover:bg-crimson/90 transition-colors"
+                        >
+                          Register Now
+                          <ArrowRight className="w-4 h-4" />
+                        </Link>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
               {events.length === 0 && !loading && (
                 <div className="col-span-full text-center py-10 text-navy/50">
                   Belum ada event terbaru saat ini.

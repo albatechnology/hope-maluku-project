@@ -6,6 +6,7 @@ import { motion } from "framer-motion"
 import { ArrowLeft, CheckCircle2, AlertCircle } from "lucide-react"
 import Link from "next/link"
 import SectionWrapper from "@/components/SectionWrapper"
+import { isEventPassed } from "@/lib/utils"
 
 const goalOptions = [
   "Mencari pekerjaan",
@@ -37,6 +38,8 @@ export default function RegisterEventPage() {
     slug === "maluku-energizing-event" ||
     eventDetail?.slug === "energizing-maluku" ||
     eventDetail?.slug === "maluku-energizing-event"
+
+  const isPassed = isEventPassed(eventDetail)
 
   const [form, setForm] = useState({
     full_name: "",
@@ -94,6 +97,10 @@ export default function RegisterEventPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (isPassed) {
+      setError("Pendaftaran tidak dapat dilakukan karena event telah berakhir.")
+      return
+    }
     setLoading(true)
     setError(null)
 
@@ -190,8 +197,21 @@ export default function RegisterEventPage() {
               </div>
             )}
 
+            {isPassed && (
+              <div className="bg-amber-50 border border-amber-200 text-amber-900 p-4 rounded-xl flex items-start mb-8 gap-3">
+                <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
+                <div>
+                  <h4 className="font-semibold text-sm">Pendaftaran Telah Ditutup</h4>
+                  <p className="text-xs text-amber-800 mt-0.5">
+                    Event ini telah selesai diselenggarakan, sehingga pendaftaran sudah tidak dibuka lagi.
+                  </p>
+                </div>
+              </div>
+            )}
+
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Data Diri */}
+              <fieldset disabled={isPassed || loading} className="space-y-6">
+                {/* Data Diri */}
               <div className="space-y-6">
                 <h3 className="text-xl font-semibold text-navy border-b border-gray-100 pb-2">Informasi Pribadi</h3>
 
@@ -485,21 +505,26 @@ export default function RegisterEventPage() {
                   </select>
                 </div>
               </div>
+              </fieldset>
 
               <div className="pt-6 mt-6 border-t border-gray-100">
                 <button
                   type="submit"
-                  disabled={loading}
-                  className="w-full bg-crimson text-white font-semibold py-4 rounded-xl hover:bg-crimson/90 transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center text-lg"
+                  disabled={loading || isPassed}
+                  className="w-full bg-crimson text-white font-semibold py-4 rounded-xl hover:bg-crimson/90 transition-colors disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-500 flex items-center justify-center text-lg"
                 >
                   {loading ? (
                     <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  ) : isPassed ? (
+                    "Pendaftaran Ditutup"
                   ) : (
                     "Daftar Event"
                   )}
                 </button>
                 <p className="text-center text-xs text-navy/50 mt-4">
-                  Dengan mendaftar, Anda menyetujui syarat & ketentuan penyelenggaraan event.
+                  {isPassed
+                    ? "Event ini telah selesai diselenggarakan."
+                    : "Dengan mendaftar, Anda menyetujui syarat & ketentuan penyelenggaraan event."}
                 </p>
               </div>
             </form>
