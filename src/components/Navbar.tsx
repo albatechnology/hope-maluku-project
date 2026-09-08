@@ -45,6 +45,10 @@ export default function Navbar() {
       : "text-navy hover:text-blue-600"
   )
 
+  if (pathname?.startsWith("/admin")) {
+    return null
+  }
+
   return (
     <header
       className={cn(

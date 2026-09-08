@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { Mail, MapPin, Phone, Globe, Play, MessageCircle, X, Music2 } from "lucide-react"
 
 const quickLinks = [
@@ -20,6 +21,12 @@ const programs = [
 ]
 
 export default function Footer() {
+  const pathname = usePathname()
+
+  if (pathname?.startsWith("/admin")) {
+    return null
+  }
+
   return (
     <footer className="bg-navy text-white">
       <div className="container py-12 md:py-16">

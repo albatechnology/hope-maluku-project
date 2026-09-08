@@ -1,10 +1,12 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { usePathname } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import { MessageCircle, ArrowUp } from "lucide-react"
 
 export default function FloatingElements() {
+  const pathname = usePathname()
   const [showBackToTop, setShowBackToTop] = useState(false)
 
   useEffect(() => {
@@ -15,6 +17,10 @@ export default function FloatingElements() {
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" })
+  }
+
+  if (pathname?.startsWith("/admin")) {
+    return null
   }
 
   return (

@@ -36,8 +36,12 @@ export default function RegisterEventPage() {
   const isSessionEvent =
     slug === "energizing-maluku" ||
     slug === "maluku-energizing-event" ||
+    slug?.startsWith("energizing-maluku") ||
+    slug?.startsWith("maluku-energizing") ||
     eventDetail?.slug === "energizing-maluku" ||
-    eventDetail?.slug === "maluku-energizing-event"
+    eventDetail?.slug === "maluku-energizing-event" ||
+    eventDetail?.slug?.startsWith("energizing-maluku") ||
+    eventDetail?.slug?.startsWith("maluku-energizing")
 
   const isPassed = isEventPassed(eventDetail)
 
