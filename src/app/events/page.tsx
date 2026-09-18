@@ -174,7 +174,24 @@ export default function EventsPage() {
         
         if (json && json.data) {
           // Filter id !== 1 sesuai permintaan
-          const filteredEvents = json.data.filter((e: Event) => e.id !== 1)
+          const filteredEvents = json.data
+            .filter((e: Event) => e.id !== 1)
+            .sort((a: Event, b: Event) => {
+              const aPassed = isEventPassed(a)
+              const bPassed = isEventPassed(b)
+
+              // Event yang sudah lewat diletakkan di paling akhir
+              if (aPassed !== bPassed) {
+                return aPassed ? 1 : -1
+              }
+
+              const aTime = new Date(a.start_date).getTime()
+              const bTime = new Date(b.start_date).getTime()
+
+              // Upcoming: terdekat ke depan; Passed: terbaru ke depan
+              return aPassed ? bTime - aTime : aTime - bTime
+            })
+
           setEvents(filteredEvents)
         }
       } catch (error) {
